@@ -1,0 +1,52 @@
+﻿@model JackMaiMa.Models.Category
+@using JackMaiMa.Models
+@using System.Globalization
+
+<dl class="dl-horizontal">
+    <dt>
+        หมวดสินค้า
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Name)
+    </dd>
+    <dt>
+        รายละเอียด
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Description)
+    </dd>
+    <dt>
+        รูปภาพ
+    </dt>
+    <dd>
+        @if (String.IsNullOrWhiteSpace(Model.ImageUrl))
+            {
+                Model.ImageUrl = GlobalValue.NoPhoto;
+            }
+        <img class="img-rounded" src="@Url.Content(Model.ImageUrl)" width="300" height="300" />
+    </dd>
+    <dt>
+        ผู้สร้างรายการ
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.CreatedBy)
+    </dd>
+    <dt>
+        เวลาที่สร้าง
+    </dt>
+    <dd>
+        @Model.CreateDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+    </dd>
+    <dt>
+        ผู้แก้ไขล่าสุด
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.ModifiedBy)
+    </dd>
+    <dt>
+        เวลาแก้ไขล่าสุด
+    </dt>
+    <dd>
+        @Model.ModifiedDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+    </dd>
+</dl>

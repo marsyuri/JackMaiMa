@@ -1,0 +1,109 @@
+﻿@*@model JackMaiMa.Models.Order*@
+@model JackMaiMa.ViewModels.OrderDetail_ViewModel
+@using JackMaiMa.Models
+@using System.Globalization
+
+@{
+    string header = "รายละเอียด Order";
+    ViewBag.Title = header;
+}
+
+<h3>@header</h3>
+<hr />
+<div>
+    @Html.Partial("_OrderDetail", Model.Order)
+</div>
+
+<p>
+    @if (Model.Order.OrderStatusId == OrderStatus.Processing)
+    {
+        @Html.ActionLink("แก้ไขวันที่", "Edit", new { id = Model.Order.Id }, new { @class = "btn btn-primary" })<span> </span>
+        @Html.ActionLink("ปิด Order", "Close", new { id = Model.Order.Id, orderStatus = OrderStatus.Finished }, new { @class = "btn btn-primary" })<span> </span>
+        @Html.ActionLink("Cancel Order", "Close", new { id = Model.Order.Id, orderStatus = OrderStatus.Canceled }, new { @class = "btn btn-primary" })
+    }
+    else
+    {
+        @Html.ActionLink("แก้ไขวันที่", "Edit", null, new { @class = "btn disabled", disabled = true })
+        @Html.ActionLink("ปิด Order", "Close", null, new { @class = "btn disabled", disabled = true })
+        @Html.ActionLink("Cancel Order", "Close", null, new { @class = "btn disabled", disabled = true })
+    }
+
+    @Html.ActionLink("ลูกค้า : " + Model.Order.Customer.Name, "Details", "Customers", new { id = Model.Order.Customer.Id }, new { @class = "btn btn-default" })
+    @Html.ActionLink("กลับสู่หน้ารายชื่อ Order ทั้งหมด", "Index", null, new { @class = "btn btn-default" })
+</p>
+
+<p>
+    @Html.ActionLink("สร้าง Order Detail", "Create", "Order_Details", new { orderId = Model.Order.Id }, new { @class = "btn btn-primary" })
+</p>
+
+<table class="table table-hover">
+    <tr>
+        <th>
+            ลำดับที่
+        </th>
+        <th>
+            สินค้า
+        </th>
+        <th>
+            ราคาขายต่อหน่วย
+        </th>
+        <th>
+            จำนวนที่สั่ง
+        </th>
+        <th>
+            ยอดรวมทั้งหมด
+        </th>
+        <th>
+            ส่วนลดทั้งหมด
+        </th>
+        <th>
+            ผู้แก้ไขล่าสุด
+        </th>
+        <th>
+            เวลาแก้ไขล่าสุด
+        </th>
+    </tr>
+    @if (Model.Order_Details.Count() == 0)
+    {
+        <tr>
+            <td colspan="8">
+                ---------- ยังไม่มีข้อมูล <span class="text-danger">'Order Detail'</span> ของ Order นี้ ----------
+            </td>
+        </tr>
+    }
+    else
+    {
+        int count = 0;
+        foreach (var item in Model.Order_Details)
+        {
+            count++;
+            <tr>
+                <td>
+                    @count.ToString()
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.Product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.UnitPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.TotalPricePerDetail)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.DiscountPerDetail)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.ModifiedBy)
+                </td>
+                <td>
+                    @item.ModifiedDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+                </td>
+            </tr>
+        }
+    }
+</table>
+

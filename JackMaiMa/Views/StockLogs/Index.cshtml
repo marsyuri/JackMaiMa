@@ -1,0 +1,126 @@
+﻿@model PagedList.IPagedList<JackMaiMa.ViewModels.StockLogViewModel>
+@using PagedList.Mvc
+@using System.Globalization
+
+@{
+    string header = "Log การเปลี่ยนแปลงจำนวนของใน Stock ของสินค้า : ";
+    ViewBag.Title = header + Model.First().ProductName;
+}
+
+<h3>@header<span class="bold-text-success">@Model.First().ProductName</span></h3>
+<hr />
+@using (Html.BeginForm("Index", "StockLogs", FormMethod.Get, new { @class = "form-inline" }))
+{
+    <div>
+        @Html.TextBox("searchBox", "", new { @class = "form-control" })
+        <button type="submit" class="btn btn-default">ค้นหา</button>
+    </div>
+}
+<br />
+
+<table class="table table-hover">
+    <tr>
+        <th>
+            @Html.ActionLink("หมายเลข Log", "Index", new { sortOrder = ViewBag.SortByLogNo, searchBox = ViewBag.Search })
+        </th>
+        <th>
+            @Html.ActionLink("ประเภท", "Index", new { sortOrder = ViewBag.SortByLogType, searchBox = ViewBag.Search })
+        </th>
+        <th>    
+            @Html.ActionLink("จำนวนเดิม", "Index", new { sortOrder = ViewBag.SortByOldStock, searchBox = ViewBag.Search })
+        </th>
+        <th>          
+            @Html.ActionLink("จำนวนที่เปลี่ยนแปลง", "Index", new { sortOrder = ViewBag.SortByNoOfChange, searchBox = ViewBag.Search })
+        </th>
+        <th> 
+            @Html.ActionLink("จำนวนปัจจุบัน", "Index", new { sortOrder = ViewBag.SortByCurStock, searchBox = ViewBag.Search })
+        </th>
+        <th>
+            @Html.ActionLink("ผู้แก้ไข", "Index", new { sortOrder = ViewBag.SortByLogBy, searchBox = ViewBag.Search })
+        </th>
+        <th> 
+            @Html.ActionLink("เวลาแก้ไข", "Index", new { sortOrder = ViewBag.SortByLogDate, searchBox = ViewBag.Search })
+        </th>
+        <th></th>
+    </tr>
+    
+    @if (ViewBag.Search == null && Model.First().StockLog == null)
+    {
+        <tr>
+            <td colspan="7">
+                ---------- <span class="text-danger">ไม่มี Log การเปลี่ยนแปลงจำนวนของใน Stock ของสินค้านี้</span> ----------
+            </td>
+        </tr>
+    }
+    else if (ViewBag.Search != null && Model.First().StockLog == null)
+    {
+        <tr>
+            <td colspan="7">
+                ---------- ค้นหาด้วยคำว่า : <span class="text-danger">@ViewBag.Search</span> - แล้วไม่พบข้อมูล ----------
+            </td>
+        </tr>
+    }
+    else
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(item.StockLog.LogNo, "Details", new { id = item.StockLog.Id }, null)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.StockLog.StockLogType.Name)
+                </td>
+                <td>
+                    @Html.FormatValue(item.StockLog.OldStock, "{0:n0}")
+                </td>
+                <td>
+                    @if (item.StockLog.NumberOfChange > 0)
+                    {
+                        <span class="bold-text-success">+@Html.FormatValue(item.StockLog.NumberOfChange, "{0:n0}")</span>
+                    } else if (item.StockLog.NumberOfChange == 0)
+                    {
+                        <span class="bold-text-info">@item.StockLog.NumberOfChange</span>
+                    }
+                    else
+                    {
+                        <span class="bold-text-danger">@Html.FormatValue(item.StockLog.NumberOfChange, "{0:n0}")</span>
+                    }
+                </td>
+                <td>
+                    @Html.FormatValue(item.StockLog.CurrentStock, "{0:n0}")
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.StockLog.LogBy)
+                </td>
+                <td>   
+                    @item.StockLog.LogDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+                </td>
+            </tr>
+        }
+    }
+</table>
+
+@if (Model.First().StockLog != null)
+{
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+}
+
+
+@if (ViewBag.Search != null)
+{
+    <div>
+        @Html.ActionLink("กลับสู่หน้า Log", "Index", null, new { @class = "btn btn-default" })
+    </div>
+    <br />
+}
+
+<p>
+    @Html.ActionLink("กลับสู่หน้ารายละเอียดของสินค้า", "Details", "Products", new { id = Model.First().ProductId }, new { @class = "btn btn-default" })
+</p>
+
+
+
+
+
+

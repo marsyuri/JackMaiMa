@@ -1,0 +1,107 @@
+﻿@model JackMaiMa.Models.Order
+@using System.Globalization
+@using JackMaiMa.Models
+
+<dl class="dl-horizontal">
+    <dt>
+        หมายเลข Order
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.OrderNo)
+    </dd>
+    <dt>
+        ลูกค้า
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Customer.Name)
+    </dd>
+    <dt>
+        วันที่สั่งสินค้า
+    </dt>
+    <dd>
+        @Model.OrderDate.ToString("d/MM/yyyy")
+    </dd>
+    <dt>
+        วันที่ต้องการสินค้า
+    </dt>
+    <dd>
+        @Model.RequiredDate.ToString("d/MM/yyyy")
+    </dd>
+    <dt>
+        ยอดรวมทั้งหมด
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.AllTotalPrice)
+    </dd>
+    <dt>
+        ส่วนลดทั้งหมด
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.DiscountPerOrder)
+    </dd>
+    <dt>
+        ยอดสุทธิ
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.NetPrice)
+    </dd>
+    <dt>
+        ผู้สร้างรายการ
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.CreatedBy)
+    </dd>
+    <dt>
+        เวลาที่สร้าง
+    </dt>
+    <dd>
+        @Model.CreateDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+    </dd>
+    <dt>
+        ผู้แก้ไขล่าสุด
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.ModifiedBy)
+    </dd>
+    <dt>
+        เวลาแก้ไขล่าสุด
+    </dt>
+    <dd>
+        @Model.ModifiedDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+    </dd>
+</dl>
+
+<dl class="dl-horizontal table-bordered">
+    <dt>
+        สถานะ
+    </dt>
+    <dd>
+        @if (Model.OrderStatusId == OrderStatus.Processing)
+        {
+            <span class="bold-text-info">@GlobalValue.Processing</span>
+        }
+        else if (Model.OrderStatusId == OrderStatus.Finished)
+        {
+            <span class="bold-text-success">@GlobalValue.Finished</span>
+        }
+        else
+        {
+            <span class="bold-text-danger">@GlobalValue.Canceled</span>
+        }
+    </dd>
+    <dt>
+        เวลาที่ปิดรายการ
+    </dt>
+    @if (Model.OrderStatusId == OrderStatus.Finished || Model.OrderStatusId == OrderStatus.Canceled)
+    {
+        <dd>
+            @Model.ModifiedDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+        </dd>
+    }
+    else
+    {
+        <dd>----------</dd>
+    }
+    <dt></dt>
+    <dd></dd>
+</dl>

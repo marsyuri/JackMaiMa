@@ -1,0 +1,158 @@
+﻿@model JackMaiMa.ViewModels.OrderFormViewModel
+@using JackMaiMa.Models
+@using Microsoft.AspNet.Identity
+
+@{
+    bool isEdit = (Model.Order != null && Model.Order.Id > 0) ? true : false;
+    string header = isEdit ? "แก้ไข" : "เพิ่ม";
+    header += " Order";
+    ViewBag.Title = header;
+}
+
+<h3>@header</h3>
+<hr />
+
+@if (ViewBag.IsCanChangeCustId != null)
+{
+    ViewBag.IsCanChangeCustId = true;
+}
+else
+{
+    ViewBag.IsCanChangeCustId = false;
+}
+
+@using (Html.BeginForm("Save", "Orders", new { isCanChangeCustId = ViewBag.IsCanChangeCustId }, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Order.OrderNo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Order.OrderNo, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Order.CustomerId, "CustomerId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (ViewBag.IsCanChangeCustId)
+                {
+                    if (Model.Order.OrderStatusId == OrderStatus.Processing)
+                    {
+                        @Html.DropDownListFor(m => m.Order.CustomerId, new SelectList(Model.Customers, "Id", "Name"), "-- เลือกลูกค้า --", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Order.CustomerId, "", new { @class = "text-danger" })
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(m => m.Order.CustomerId, new SelectList(Model.Customers, "Id", "Name"), "", new { @class = "form-control", disabled = "disabled" })
+                    }
+                }
+                else
+                {
+                    @Html.DropDownListFor(m => m.Order.CustomerId, new SelectList(Model.Customers, "Id", "Name"), "", new { @class = "form-control", disabled = "disabled" })
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Order.OrderDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (Model.Order.OrderStatusId == OrderStatus.Processing)
+                {
+                    @Html.TextBoxFor(m => m.Order.OrderDate, "{0:d MMM yyyy}", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Order.OrderDate, "", new { @class = "text-danger" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(m => m.Order.OrderDate, "{0:d MMM yyyy}", new { @class = "form-control", @readonly = "true" })
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Order.RequiredDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (Model.Order.OrderStatusId == OrderStatus.Processing)
+                {
+                    @Html.TextBoxFor(m => m.Order.RequiredDate, "{0:d MMM yyyy}", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Order.RequiredDate, "", new { @class = "text-danger" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(m => m.Order.RequiredDate, "{0:d MMM yyyy}", new { @class = "form-control", @readonly = "true" })
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Order.AllTotalPrice, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Order.AllTotalPrice, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Order.DiscountPerOrder, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Order.DiscountPerOrder, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Order.NetPrice, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Order.NetPrice, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+            </div>
+        </div>
+
+
+        @if (isEdit)
+        {
+            @Html.HiddenFor(m => m.Order.Id)
+            @Html.HiddenFor(m => m.Order.Stamp)
+        }
+
+        @{
+            string username = User.Identity.GetUserName();
+            if (!String.IsNullOrWhiteSpace(username))
+            {
+                int assignIndex = username.IndexOf('@');
+                username = username.Substring(0, assignIndex);
+            }
+        }
+
+        @if (!ViewBag.IsCanChangeCustId)
+        {
+            @Html.HiddenFor(m => m.Order.CustomerId)
+        }
+
+        @Html.HiddenFor(m => m.Order.CreatedBy, new { @Value = username })
+        @Html.HiddenFor(m => m.Order.ModifiedBy, new { @Value = username })
+        @Html.HiddenFor(m => m.Order.RunNo)
+        @Html.HiddenFor(m => m.Order.OrderStatusId)
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @if (Model.Order.OrderStatusId == OrderStatus.Processing)
+                {
+                    <input type="submit" value="บันทึก" class="btn btn-primary" />
+                }
+                else
+                {
+                    <input type="submit" value="บันทึก" class="btn disabled" disabled />
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("กลับสู่หน้ารายชื่อ", "Index", null, new { @class = "btn btn-default" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

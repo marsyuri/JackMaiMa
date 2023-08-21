@@ -1,0 +1,31 @@
+﻿@model JackMaiMa.Models.Product
+
+@{
+    string header = "รายละเอียดสินค้า";
+    ViewBag.Title = header;
+}
+
+<h3>@header</h3>
+<hr />
+<div>
+    @Html.Partial("_ProductDetail", Model)
+</div>
+<p>
+    @Html.ActionLink("แก้ไข", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("ลบ", "Delete", new { id = Model.Id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("กลับสู่หน้ารายชื่อ", "Index", null, new { @class = "btn btn-default" })
+    @Html.ActionLink("หมวดสินค้า : " + Model.Category.Name
+            , "Details", "Categories"
+            , new { id = Model.Category.Id }
+            , new { @class = "btn btn-default" })
+    @Html.ActionLink("ซัพพลายเออร์ : " + Model.Supplier.Name
+            , "Details"
+            , "Suppliers"
+            , new { id = Model.Supplier.Id }
+            , new { @class = "btn btn-default" })
+    @Html.ActionLink("Log การเปลี่ยนแปลงจำนวนของใน Stock"
+            , "Index"
+            , "StockLogs"
+            , new { productId = Model.Id }
+            , new { @class = "btn btn-default" })
+</p>

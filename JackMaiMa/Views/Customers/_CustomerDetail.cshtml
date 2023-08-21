@@ -1,0 +1,96 @@
+﻿@model JackMaiMa.Models.Customer
+@using System.Globalization;
+
+<dl class="dl-horizontal">
+    <dt>
+        ลูกค้า
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Name)
+    </dd>
+    <dt>
+        ชื่อผู้ติดต่อ
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.ContactName)
+    </dd>
+    <dt>
+        ตำแหน่งผู้ติดต่อ
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.ContactTitle)
+    </dd>
+    <dt>
+        ที่อยู่
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Address)
+    </dd>
+    <dt>
+        แขวง/ตำบล
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Tambon)
+    </dd>
+    <dt>
+        เขต/อำเภอ
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Amphur)
+    </dd>
+    <dt>
+        จังหวัด
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Province)
+    </dd>
+    <dt>
+        รหัสไปรษณีย์
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.PostalCode)
+    </dd>
+    <dt>
+        โทรศัพท์
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Phone)
+    </dd>
+    <dt>
+        อีเมล์
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Email)
+    </dd>
+    <dt>
+        ช่องทางติดต่ออื่น
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.OptionalContact)
+    </dd>
+    <dt>
+        ผู้สร้างรายการ
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.CreatedBy)
+    </dd>
+    <dt>
+        เวลาที่สร้าง
+    </dt>
+    <dd>
+        @Model.CreateDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+    </dd>
+    <dt>
+        ผู้แก้ไขล่าสุด
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.ModifiedBy)
+    </dd>
+    <dt>
+        เวลาแก้ไขล่าสุด
+    </dt>
+    <dd>
+        @Model.ModifiedDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+    </dd>
+</dl>
+

@@ -1,0 +1,88 @@
+﻿@model JackMaiMa.Models.Product
+@using JackMaiMa.Models;
+@using System.Globalization;
+
+<dl class="dl-horizontal">
+    <dt>
+        สินค้า
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Name)
+    </dd>
+    <dt>
+        หมวดสินค้า
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Category.Name)
+    </dd>
+    <dt>
+        ซัพพลายเออร์
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Supplier.Name)
+    </dd>
+    <dt>
+        รายละเอียด
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.Description)
+    </dd>
+    <dt>
+        ต้นทุนต่อหน่วย
+    </dt>
+    <dd>
+        @Html.FormatValue(Model.UnitCost, "{0:n2}")
+    </dd>
+    <dt>
+        ราคาขายต่อหน่วย
+    </dt>
+    <dd>
+        @Html.FormatValue(Model.UnitPrice, "{0:n2}")
+    </dd>
+    <dt>
+        จำนวนของใน Stock
+    </dt>
+    <dd>
+        @Html.FormatValue(Model.NumberInStock, "{0:n0}")
+    </dd>
+    <dt>
+        จำนวนที่ขายได้
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.NumberInSell)
+    </dd>
+    <dt>
+        รูปภาพ
+    </dt>
+    <dd>
+        @if (String.IsNullOrWhiteSpace(Model.ImageUrl))
+            {
+                Model.ImageUrl = GlobalValue.NoPhoto;
+            }
+        <img class="img-rounded" src="@Url.Content(Model.ImageUrl)" width="300" height="300" />
+    </dd>
+    <dt>
+        ผู้สร้างรายการ
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.CreatedBy)
+    </dd>
+    <dt>
+        เวลาที่สร้าง
+    </dt>
+    <dd>
+        @Model.CreateDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+    </dd>
+    <dt>
+        ผู้แก้ไขล่าสุด
+    </dt>
+    <dd>
+        @Html.DisplayFor(m => m.ModifiedBy)
+    </dd>
+    <dt>
+        เวลาแก้ไขล่าสุด
+    </dt>
+    <dd>
+        @Model.ModifiedDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+    </dd>
+</dl>

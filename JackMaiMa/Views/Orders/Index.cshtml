@@ -1,0 +1,132 @@
+﻿@model PagedList.IPagedList<JackMaiMa.Models.Order>
+@using PagedList.Mvc
+@using System.Globalization
+@using JackMaiMa.Models
+
+
+@{
+    string header = "รายชื่อ Order ทั้งหมด";
+    ViewBag.Title = header;
+}
+
+<h3>@header</h3>
+<hr />
+<p>
+    @Html.ActionLink("เพิ่ม Order", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+@using (Html.BeginForm("Index", "Orders", FormMethod.Get, new { @class = "form-inline" }))
+{
+    <div>
+        @Html.TextBox("searchBox", "", new { @class = "form-control" })
+        <button type="submit" class="btn btn-default">ค้นหา</button>
+    </div>
+}
+<br />
+
+
+<table class="table table-hover">
+    <tr>
+        <th>
+            @Html.ActionLink("หมายเลข Order", "Index", new { sortOrder = ViewBag.SortByOrderNo, searchBox = ViewBag.Search })
+        </th>
+        <th>
+            @Html.ActionLink("ลูกค้า", "Index", new { sortOrder = ViewBag.SortByCustName, searchBox = ViewBag.Search })
+        </th>
+        <th>
+            @Html.ActionLink("วันที่สั่งสินค้า", "Index", new { sortOrder = ViewBag.SortByOrderDate, searchBox = ViewBag.Search })
+        </th>
+        <th>
+            @Html.ActionLink("วันที่ต้องการสินค้า", "Index", new { sortOrder = ViewBag.SortByRequiredDate, searchBox = ViewBag.Search })
+        </th>
+        <th>
+            @Html.ActionLink("ยอดสุทธิ", "Index", new { sortOrder = ViewBag.SortByNetPrice, searchBox = ViewBag.Search })
+        </th>
+        <th>
+            @Html.ActionLink("ผู้สร้างรายการ", "Index", new { sortOrder = ViewBag.SortByCreatedBy, searchBox = ViewBag.Search })
+        </th>
+        <th>
+            @Html.ActionLink("เวลาที่สร้างรายการ", "Index", new { sortOrder = ViewBag.SortByCreateDate, searchBox = ViewBag.Search })
+        </th>
+        <th>
+            @Html.ActionLink("สถานะ", "Index", new { sortOrder = ViewBag.SortByStatus, searchBox = ViewBag.Search })
+        </th>
+    </tr>
+
+    @if (ViewBag.Search == null && !Model.Any())
+    {
+        <tr>
+            <td colspan="9">
+                ---------- <span class="text-danger">ยังไม่มีข้อมูล Order</span> ----------
+            </td>
+        </tr>
+
+    }
+    else if (ViewBag.Search != null && !Model.Any())
+    {
+        <tr>
+            <td colspan="9">
+                ---------- ค้นหาด้วยคำว่า - <span class="text-danger">@ViewBag.Search</span> - แล้วไม่พบข้อมูล ----------
+            </td>
+        </tr>
+    }
+    else
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(item.OrderNo, "Details", new { id = item.Id })
+                </td>
+                <td>
+                    @Html.ActionLink(item.Customer.Name, "Details", "Customers", new { id = item.Customer.Id }, null)
+                </td>
+                <td>
+                    @item.OrderDate.ToString("d/MM/yyyy")
+                </td>
+                <td>
+                    @item.RequiredDate.ToString("d/MM/yyyy")
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.NetPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.CreatedBy)
+                </td>
+                <td>
+                    @item.CreateDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+                </td>
+                <td>
+                    @{
+                        string statusName = GlobalValue.Processing;
+                        string spanClassName = "";
+                    }
+                    @if (item.OrderStatusId == OrderStatus.Finished)
+                    {
+                        statusName = GlobalValue.Finished;
+                        spanClassName = "bold-text-success";
+                    }
+                    else if (item.OrderStatusId == OrderStatus.Canceled)
+                    {
+                        statusName = GlobalValue.Canceled;
+                        spanClassName = "bold-text-danger";
+                    }
+                    <span class=@spanClassName>@statusName</span>
+                </td>
+            </tr>
+        }
+}
+</table>
+
+@if (Model.Any())
+{
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+}
+
+
+@if (ViewBag.Search != null)
+{
+    <div>
+        @Html.ActionLink("กลับสู่หน้ารายชื่อ", "Index", null, new { @class = "btn btn-default" })
+    </div>
+}

@@ -1,0 +1,79 @@
+﻿@model JackMaiMa.ViewModels.SupplierDetailViewModel
+@using System.Globalization
+
+@{
+    string header = "รายละเอียดซัพพลายเออร์";
+    ViewBag.Title = header;
+}
+
+<h3>@header</h3>
+<hr />
+<div>
+    @Html.Partial("_SupplierDetail", Model.Supplier)
+</div>
+
+<br />
+<table class="table table-hover">
+    <tr>
+        <th>
+            สินค้า
+        </th>
+        <th>
+            หมวดสินค้า
+        </th>
+        <th>
+            ราคาขายต่อหน่วย
+        </th>
+        <th>
+            จำนวนของใน Stock
+        </th>
+        <th>
+            จำนวนที่ขายได้
+        </th>
+        <th>
+            เวลาแก้ไขล่าสุด
+        </th>
+    </tr>
+    @if (Model.Products.Count() == 0)
+    {
+        <tr>
+            <td colspan="6">
+                ---------- ยังไม่มีข้อมูล <span class="text-danger">'สินค้า'</span> ของซัพพลายเออร์นี้ ----------
+            </td>
+        </tr>
+    }
+    else
+    {
+        foreach (var item in Model.Products)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(item.Name, "Details", "Products", new { id = item.Id }, null)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.Category.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.UnitPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.NumberInStock)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.NumberInSell)
+                </td>
+                <td>
+                    @item.ModifiedDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+                </td>
+            </tr>
+        }
+    }
+</table>
+<br />
+
+<p>
+    @Html.ActionLink("แก้ไข", "Edit", new { id = Model.Supplier.Id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("ลบ", "Delete", new { id = Model.Supplier.Id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("กลับสู่หน้ารายชื่อ", "Index", null, new { @class = "btn btn-default" })
+</p>
+

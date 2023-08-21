@@ -1,0 +1,39 @@
+﻿@model JackMaiMa.Models.Supplier
+@using JackMaiMa.Models;
+@using System.Globalization;
+
+@{
+    string header = "ลบซัพพลายเออร์";
+    ViewBag.Title = header;
+}
+
+<h3>@header</h3>
+<hr />
+@if (ViewBag.IsRelateProduct != null)
+{
+    <br />
+    <h4>ไม่สามารถลบซัพพลายเออร์ : <span style="color:red">@Model.Name</span> ได้ เพราะซัพพลายเออร์นี้มีการผูกข้อมูลกับ 'สินค้า'</h4>
+    <br />
+    <br />
+    <p>
+        @Html.ActionLink("รายละเอียด", "Details", new { id = Model.Id }, new { @class = "btn btn-default" })
+        @Html.ActionLink("กลับสู่หน้ารายชื่อ", "Index", null, new { @class = "btn btn-default" })
+    </p>
+}
+else
+{
+    <h4>ยืนยันที่จะลบ?</h4>
+    <div>
+        @Html.Partial("_SupplierDetail", Model)
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="ลบ" class="btn btn-primary" />
+                @Html.ActionLink("กลับสู่หน้ารายชื่อ", "Index", null, new { @class = "btn btn-default" })
+            </div>
+        }
+    </div>
+}

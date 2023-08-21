@@ -1,0 +1,113 @@
+﻿@model JackMaiMa.ViewModels.StockLogViewModel
+@using JackMaiMa.Models
+
+@{
+    bool isCanEdit = (Model.StockLog.RunningNo == GlobalValue.StartRunningNo) ? false : true;
+    string header = "แก้ไขสาเหตุการเปลี่ยนจำนวนของ Stock ของสินค้า : ";
+    ViewBag.Title = header + Model.ProductName;
+
+}
+
+<h3>@header<span class="bold-text-success">@Model.ProductName</span></h3>
+<hr />
+<br />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.StockLog.LogNo, "หมายเลข Log", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.StockLog.LogNo, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.StockLog.StockLogType.Name, "ประเภท", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.StockLog.StockLogType.Name, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.StockLog.OldStock, "จำนวนเดิม", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.StockLog.OldStock, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.StockLog.NumberOfChange, "จำนวนที่เปลี่ยน", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.StockLog.NumberOfChange, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.StockLog.CurrentStock, "จำนวนปัจจุบัน", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.StockLog.CurrentStock, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.StockLog.Remarks, "สาเหตุที่เปลี่ยนจำนวน", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (Model.StockLog.RunningNo == GlobalValue.StartRunningNo)
+                {
+                    @Html.EditorFor(m => m.StockLog.Remarks, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+                }
+                else
+                {
+                    @Html.EditorFor(m => m.StockLog.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                }
+                @Html.ValidationMessageFor(m => m.StockLog.Remarks, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10 text-danger">
+                @if (isCanEdit)
+                {
+                    <span>การแก้ไขสาเหตุ จะไม่ update ข้อมูล 'ผู้แก้ไข' และ 'เวลาแก้ไข'</span>
+                }
+                else
+                {
+                    <span>Log ตอนเริ่มต้นสร้างข้อมูล ไม่สามารถแก้ไขสาเหตุได้</span>
+                }
+            </div>
+        </div>
+
+        @Html.HiddenFor(m => m.StockLog.Id)
+        @Html.HiddenFor(m => m.StockLog.LogBy)
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @if (isCanEdit)
+                {
+                    <input type="submit" value="บันทึก" class="btn btn-primary" />
+                }
+                else
+                {
+                    <input type="submit" value="บันทึก" class="btn disabled" disabled />
+                }
+            </div>
+        </div>
+    </div>
+                    }
+
+<div>
+    @Html.ActionLink("รายละเอียด Log", "Details", new { id = Model.StockLog.Id }, new { @class = "btn btn-default" })
+    @Html.ActionLink("กลับสู่หน้า Log"
+            , "Index"
+            , new { productId = Model.ProductId }
+            , new { @class = "btn btn-default" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

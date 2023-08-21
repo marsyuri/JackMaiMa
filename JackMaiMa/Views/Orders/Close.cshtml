@@ -1,0 +1,77 @@
+﻿@model JackMaiMa.Models.Order
+@using JackMaiMa.Models
+
+@{
+    string header = "ปิด Order";
+    if (ViewBag.OrderStatus == OrderStatus.Canceled)
+    {
+        header = "Cancel Order";
+    }
+    string displayHeader = header;
+    if (ViewBag.OrderStatus == OrderStatus.Finished)
+    {
+        displayHeader = header + " เนื่องจากดำเนินการเรียบร้อย";
+    }
+    ViewBag.Title = header;
+}
+
+<h3>@displayHeader</h3>
+<hr />
+@if (Model.OrderStatusId == OrderStatus.Finished)
+{
+    <h4 class="bold-text-success">----- รายการนี้ดำเนินการเรียบร้อยแล้ว ไม่สามารถแก้ไขได้อีก  -----</h4>
+}
+else if (Model.OrderStatusId == OrderStatus.Canceled)
+{
+    <h4 class="bold-text-danger">----- รายการนี้ยกเลิกแล้ว ไม่สามารถแก้ไขได้อีก  -----</h4>
+}
+else
+{
+    string closeAction = "ปิด";
+    if (ViewBag.OrderStatus == OrderStatus.Canceled)
+    {
+        closeAction = " Cancel";
+    }
+    <h4 class="bold-text-danger">***** หลังจาก<span>@closeAction</span> Order คุณจะไม่สามารถแก้ไขรายการนี้ได้อีก และไม่สามารถย้อนกลับการกระทำนี้ได้ *****</h4>
+    <br />
+    <h4>ยืนยันที่จะ<span>@closeAction</span> Order?</h4>
+}
+
+<div>
+    @Html.Partial("_OrderDetail", Model)
+
+    @using (Html.BeginForm("Close", "Orders", new { orderStatus = ViewBag.OrderStatus }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-actions no-color">
+            @if (Model.OrderStatusId == OrderStatus.Processing)
+            {
+                if (ViewBag.OrderStatus == OrderStatus.Finished)
+                {
+                    <input type="submit" value="ปิด Order" class="btn btn-primary" />
+                }
+                else
+                {
+                    <input type="submit" value="Cancel Order" class="btn btn-primary" />
+                }
+            }
+            else
+            {
+                if (ViewBag.OrderStatus == OrderStatus.Finished)
+                {
+                    <input type="submit" value="ปิด Order" class="btn disabled" disabled />
+                }
+                else
+                {
+                    <input type="submit" value="Cancel Order" class="btn disabled" disabled />
+                }
+            }
+
+
+            @Html.ActionLink("ลูกค้า : " + Model.Customer.Name, "Details", "Customers", new { id = Model.Customer.Id }, new { @class = "btn btn-default" })
+            @Html.ActionLink("กลับสู่หน้ารายชื่อ Order ทั้งหมด", "Index", null, new { @class = "btn btn-default" })
+        </div>
+    }
+</div>
+
+

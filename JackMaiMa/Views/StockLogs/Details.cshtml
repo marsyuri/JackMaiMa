@@ -1,0 +1,104 @@
+﻿@model JackMaiMa.Models.StockLog
+@using System.Globalization
+@using JackMaiMa.Models
+
+@{
+    bool isCanEdit = Model.RunningNo == GlobalValue.StartRunningNo ? false : true;
+    string header = "รายละเอียด Log ของสินค้า : ";
+    ViewBag.Title = header + Model.Product.Name;
+}
+
+<h3>@header<span class="bold-text-success">@Model.Product.Name</span></h3>
+<hr />
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            หมายเลข Log
+        </dt>
+        <dd>
+            @Html.DisplayFor(m => m.LogNo)
+        </dd>
+        <dt>
+            ประเภท
+        </dt>
+        <dd>
+            @Html.DisplayFor(m => m.StockLogType.Name)
+        </dd>
+        <dt>
+            จำนวนเดิม
+        </dt>
+        <dd>
+            @Html.FormatValue(Model.OldStock, "{0:n0}")
+        </dd>
+        <dt>
+            จำนวนที่เปลี่ยนแปลง
+        </dt>
+        @{
+            string ddClassName = "bold-text-success";
+            if (Model.NumberOfChange == 0)
+            {
+                ddClassName = "bold-text-info";
+            }
+            else if (Model.NumberOfChange < 0)
+            {
+                ddClassName = "bold-text-danger";
+            }
+        }
+        <dd class=@ddClassName>
+            @if (Model.NumberOfChange > 0)
+            {
+                <span>+</span>@Html.FormatValue(Model.NumberOfChange, "{0:n0}")
+            }
+            else
+            {
+                @Html.FormatValue(Model.NumberOfChange, "{0:n0}")
+            }
+        </dd>
+        <dt>
+            จำนวนปัจจุบัน
+        </dt>
+        <dd>
+            @Html.FormatValue(Model.CurrentStock, "{0:n0}")
+        </dd>
+        <dt>
+            สาเหตุที่เปลี่ยนจำนวน
+        </dt>
+        <dd>
+            @Html.DisplayFor(m => m.Remarks)
+        </dd>
+
+        @if (!isCanEdit)
+        {
+            <dt></dt>
+            <dd class="text-danger">
+                Log ตอนเริ่มต้นสร้างข้อมูล ไม่สามารถแก้ไขสาเหตุได้
+            </dd>
+        }
+
+        <dt>
+            เวลาแก้ไข
+        </dt>
+        <dd>
+            @Model.LogDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+        </dd>
+        <dt>
+            ผู้แก้ไข
+        </dt>
+        <dd>
+            @Html.DisplayFor(m => m.LogBy)
+        </dd>
+    </dl>
+</div>
+<p>
+    @if (isCanEdit)
+    {
+        @Html.ActionLink("แก้ไขสาเหตุ", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+    }
+    else
+    {
+        @Html.ActionLink("แก้ไขสาเหตุ", "Edit", null, new { @class = "btn disabled", disabled = true })
+    }
+    @Html.ActionLink("กลับสู่หน้า Log"
+            , "Index", new { productId = Model.Product.Id }, new { @class = "btn btn-default" })
+</p>

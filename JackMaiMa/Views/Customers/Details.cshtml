@@ -1,0 +1,109 @@
+﻿@model JackMaiMa.ViewModels.CustomerDetailViewModel
+@using System.Globalization
+@using JackMaiMa.Models
+
+@{
+    string header = "รายละเอียดลูกค้า";
+    ViewBag.Title = header;
+}
+
+<h3>@header</h3>
+<hr />
+<div>
+    @Html.Partial("_CustomerDetail", Model.Customer)
+</div>
+
+<p>
+    @Html.ActionLink("แก้ไข", "Edit", new { id = Model.Customer.Id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("ลบ", "Delete", new { id = Model.Customer.Id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("กลับสู่หน้ารายชื่อ", "Index", null, new { @class = "btn btn-default" })
+</p>
+
+<hr />
+<p>
+    @Html.ActionLink("สร้าง Order", "Create", "Orders", new { customerId = Model.Customer.Id }, new { @class = "btn btn-primary" })
+</p>
+
+<table class="table table-hover">
+    <tr>
+        <th>
+            หมายเลข Order
+        </th>
+        <th>
+            วันที่สั่งสินค้า
+        </th>
+        <th>
+            ยอดรวมทั้งหมด
+        </th>
+        <th>
+            ส่วนลดทั้งหมด
+        </th>
+        <th>
+            ยอดสุทธิ
+        </th>
+        <th>
+            ผู้สร้างรายการ
+        </th>
+        <th>
+            เวลาที่สร้างรายการ
+        </th>
+        <th>
+            สถานะ
+        </th>
+        <th></th>
+    </tr>
+    @if (Model.Orders.Count() == 0)
+    {
+        <tr>
+            <td colspan="6">
+                ---------- ยังไม่มีข้อมูล <span class="text-danger">'Order'</span> ในหมวดสินค้านี้ ----------
+            </td>
+        </tr>
+    }
+    else
+    {
+        foreach (var item in Model.Orders)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(item.OrderNo, "Details", "Orders", new { id = item.Id }, null)
+                </td>
+                <td>
+                    @item.OrderDate.ToString("d/MM/yyyy")
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.AllTotalPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.DiscountPerOrder)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.NetPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.CreatedBy)
+                </td>
+                <td>
+                    @item.CreateDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+                </td>
+                <td>
+                    @{
+                        string statusName = GlobalValue.Processing;
+                        string spanClassName = "";
+                    }
+                    @if (item.OrderStatusId == OrderStatus.Finished)
+                    {
+                        statusName = GlobalValue.Finished;
+                        spanClassName = "bold-text-success";
+                    }
+                    else if (item.OrderStatusId == OrderStatus.Canceled)
+                    {
+                        statusName = GlobalValue.Canceled;
+                        spanClassName = "bold-text-danger";
+                    }
+                    <span class=@spanClassName>@statusName</span>
+                </td>
+            </tr>
+        }
+    }
+</table>

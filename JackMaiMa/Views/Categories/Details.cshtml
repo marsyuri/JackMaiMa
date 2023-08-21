@@ -1,0 +1,90 @@
+﻿@model JackMaiMa.ViewModels.CategoryDetailViewModel
+@using System.Globalization
+
+@{
+    string header = "รายละเอียดหมวดสินค้า";
+    ViewBag.Title = header;
+}
+
+<h3>@header</h3>
+<hr />
+<div>
+    @Html.Partial("_CategoryDetail", Model.Category)
+</div>
+
+<br />
+<table class="table table-hover">
+    <tr>
+        <th>
+            สินค้า
+        </th>
+        <th>
+            ซัพพลายเออร์
+        </th>
+        <th>
+            ต้นทุนต่อหน่วย
+        </th>
+        <th>
+            ราคาขายต่อหน่วย
+        </th>
+        <th>
+            จำนวนของใน Stock
+        </th>
+        <th>
+            จำนวนที่ขายได้
+        </th>
+        <th>
+            ผู้แก้ไขล่าสุด
+        </th>
+        <th>
+            เวลาแก้ไขล่าสุด
+        </th>
+    </tr>
+    @if (Model.Products.Count() == 0)
+    {
+        <tr>
+            <td colspan="6">
+                ---------- ยังไม่มีข้อมูล <span class="text-danger">'สินค้า'</span> ในหมวดสินค้านี้ ----------
+            </td>
+        </tr>
+    }
+    else
+    {
+        foreach (var item in Model.Products)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(item.Name, "Details", "Products", new { id = item.Id }, null)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.Supplier.Name)
+                </td>
+                <td>
+                    @Html.FormatValue(item.UnitCost, "{0:n2}")
+                </td>
+                <td>
+                    @Html.FormatValue(item.UnitPrice, "{0:n2}")
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.NumberInStock)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.NumberInSell)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.ModifiedBy)
+                </td>
+                <td>
+                    @item.ModifiedDate.ToString("G", CultureInfo.CreateSpecificCulture("nl-BE"))
+                </td>
+            </tr>
+        }
+    }
+</table>
+<br />
+
+<p>
+    @Html.ActionLink("แก้ไข", "Edit", new { id = Model.Category.Id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("ลบ", "Delete", new { id = Model.Category.Id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("กลับสู่หน้ารายชื่อ", "Index", null, new { @class = "btn btn-default" })
+</p>

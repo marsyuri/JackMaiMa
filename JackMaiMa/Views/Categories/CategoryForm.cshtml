@@ -1,0 +1,128 @@
+﻿@model JackMaiMa.Models.Category
+@using JackMaiMa.Models
+@using Microsoft.AspNet.Identity
+
+@{
+    bool isEdit = (Model != null && Model.Id > 0) ? true : false;
+    bool hasImage = false;
+    if (isEdit)
+    {
+        if (!String.IsNullOrWhiteSpace(Model.ImageUrl))
+        {
+            hasImage = true;
+        }
+    }
+    string header = isEdit ? "แก้ไข" : "เพิ่ม";
+    header += "หมวดสินค้า";
+    ViewBag.Title = header;
+}
+
+<h3>@header</h3>
+<hr />
+@using (Html.BeginForm("Save", "Categories", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Name, "หมวดสินค้า", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Description, "รายละเอียด", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.Description
+                            , GlobalValue.TextAreaRow
+                            , GlobalValue.TextAreaCol
+                            , new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        @if (isEdit)
+        {
+            <div class="form-group">
+                @Html.LabelFor(m => m.ImageUrl
+                    , (ViewBag.ImageUrlChange != null) ? "รูปที่คุณ Upload ล่าสุด" : "รูปปัจจุบัน"
+                    , new { @class = "control-label col-md-2" })
+                @if (String.IsNullOrWhiteSpace(Model.ImageUrl))
+                {
+                    Model.ImageUrl = GlobalValue.NoPhoto;
+                }
+                <div class="col-md-10">
+                    <img class="img-rounded" src="@Url.Content(Model.ImageUrl)" width="280" height="280" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-2"></div>
+                <div class="col-md-10">
+                    <label>
+                        @Html.CheckBoxFor(m => m.IsNoImage)
+                        @if (hasImage)
+                        {
+                            <span>คุณต้องการลบรูปภาพ ?</span>
+                        }
+                        else
+                        {
+                            <span>คุณยืนยันที่จะไม่มีรูปภาพ ?</span>
+                        }
+                    </label>
+                    @Html.ValidationMessageFor(m => m.IsNoImage, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.ImageUrl, isEdit ? "แก้ไขรูปภาพ" : "เพิ่มรูปภาพ", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (ViewBag.ImageUrlChange != null)
+                {
+                    @Html.EditorFor(m => m.ImageUrl, new { htmlAttributes = new { @class = "form-control" } })
+                }
+                else
+                {
+                    <input name="ImageFile" type="file" />
+                }
+                @Html.ValidationMessageFor(m => m.ImageUrl, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @if (isEdit)
+        {
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.Stamp)
+        }
+
+        @{ 
+            string username = User.Identity.GetUserName();
+            if (!String.IsNullOrWhiteSpace(username))
+            {
+                int assignIndex = username.IndexOf('@');
+                username = username.Substring(0, assignIndex);
+            }
+        }
+        @Html.HiddenFor(m => m.CreatedBy, new { @Value = username })
+        @Html.HiddenFor(m => m.ModifiedBy, new { @Value = username })
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="บันทึก" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("กลับสู่หน้ารายชื่อ", "Index", null, new { @class = "btn btn-default" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
