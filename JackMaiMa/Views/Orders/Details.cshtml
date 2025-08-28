@@ -1,5 +1,4 @@
-﻿@*@model JackMaiMa.Models.Order*@
-@model JackMaiMa.ViewModels.OrderDetail_ViewModel
+﻿@model JackMaiMa.ViewModels.OrderDetail_ViewModel
 @using JackMaiMa.Models
 @using System.Globalization
 
@@ -33,7 +32,14 @@
 </p>
 
 <p>
-    @Html.ActionLink("สร้าง Order Detail", "Create", "Order_Details", new { orderId = Model.Order.Id }, new { @class = "btn btn-primary" })
+    @if (Model.Order.OrderStatusId == OrderStatus.Processing)
+    {
+        @Html.ActionLink("สร้าง Order Detail", "Create", "Order_Details", new { orderId = Model.Order.Id }, new { @class = "btn btn-primary" })
+    }
+    else
+    {
+        @Html.ActionLink("สร้าง Order Detail", "Create", "Order_Details", new { orderId = Model.Order.Id }, new { @class = "btn btn-primary", disabled = true })
+    }
 </p>
 
 <table class="table table-hover">
@@ -51,10 +57,10 @@
             จำนวนที่สั่ง
         </th>
         <th>
-            ยอดรวมทั้งหมด
+            ยอดรวม
         </th>
         <th>
-            ส่วนลดทั้งหมด
+            ส่วนลด
         </th>
         <th>
             ผู้แก้ไขล่าสุด

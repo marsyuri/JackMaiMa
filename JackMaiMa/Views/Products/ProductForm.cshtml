@@ -19,6 +19,7 @@
 
 <h3>@header</h3>
 <hr />
+
 @using (Html.BeginForm("Save", "Products", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
@@ -53,9 +54,9 @@
             @Html.LabelFor(m => m.Product.Description, "รายละเอียด", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.TextAreaFor(m => m.Product.Description
-                 , GlobalValue.TextAreaRow
-                 , GlobalValue.TextAreaCol
-                 , new { @class = "form-control" })
+                      , GlobalValue.TextAreaRow
+                      , GlobalValue.TextAreaCol
+                      , new { @class = "form-control" })
                 @Html.ValidationMessageFor(m => m.Product.Description, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -64,7 +65,7 @@
             @Html.LabelFor(m => m.Product.UnitCost, "ต้นทุนต่อหน่วย", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.TextBoxFor(m => m.Product.UnitCost
-                                , new { @class = "form-control", required = "required", type = "number", min = "0", placeholder = "ใส่ตัวเลขตั้งแต่ 0 ขึ้นไป" })
+                                     , new { @class = "form-control", required = "required", type = "number", min = "0", placeholder = "ใส่ตัวเลขตั้งแต่ 0 ขึ้นไป" })
                 @Html.ValidationMessageFor(m => m.Product.UnitCost, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -73,106 +74,106 @@
             @Html.LabelFor(m => m.Product.UnitPrice, "ราคาขายต่อหน่วย", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.TextBoxFor(m => m.Product.UnitPrice
-                                , new { @class = "form-control", required = "required", type = "number", min = "0", placeholder = "ใส่ตัวเลขตั้งแต่ 0 ขึ้นไป" })
+                                     , new { @class = "form-control", required = "required", type = "number", min = "0", placeholder = "ใส่ตัวเลขตั้งแต่ 0 ขึ้นไป" })
                 @Html.ValidationMessageFor(m => m.Product.UnitPrice, "", new { @class = "text-danger" })
             </div>
         </div>
 
         @if (isEdit)
         {
-        <div class="form-group">
-            @Html.LabelFor(m => m.Product.NumberInStock, "จำนวนของใน Stock", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Product.NumberInStock, new { @class = "form-control", @readonly = "true" })
-                @Html.ValidationMessageFor(m => m.Product.NumberInStock, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(m => m.Product.NumberInStock, "จำนวนของใน Stock", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Product.NumberInStock, new { @class = "form-control", @readonly = "true" })
+                    @Html.ValidationMessageFor(m => m.Product.NumberInStock, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <div class="col-md-2"></div>
-            <div class="col-md-10">
-                <label>
-                    @Html.RadioButton("changeStockAction", GlobalValue.AddStock) เพิ่ม
-                    @Html.RadioButton("changeStockAction", GlobalValue.DeleteStock) ลบ
-                    @Html.RadioButton("changeStockAction", GlobalValue.NoChangeStock, true) ไม่เปลี่ยนแปลง
-                </label>
+            <div class="form-group">
+                <div class="col-md-2"></div>
+                <div class="col-md-10">
+                    <label>
+                        @Html.RadioButton("changeStockAction", GlobalValue.AddStock) เพิ่ม
+                        @Html.RadioButton("changeStockAction", GlobalValue.DeleteStock) ลบ
+                        @Html.RadioButton("changeStockAction", GlobalValue.NoChangeStock, true) ไม่เปลี่ยนแปลง
+                    </label>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.Label("จำนวนที่เปลี่ยน", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBox("changeStockAmountText"
-                                , "0"
-                                , new {@class = "form-control", required = "required", type = "number", min = "0", placeholder = "ใส่ตัวเลขที่มีค่าตั้งแต่ 0 ขึ้นไป"})
-                @Html.ValidationMessage("changeStockAmountText", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.Label("จำนวนที่เปลี่ยน", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBox("changeStockAmountText"
+                                         , "0"
+                                         , new { @class = "form-control", required = "required", type = "number", min = "0", placeholder = "ใส่ตัวเลขที่มีค่าตั้งแต่ 0 ขึ้นไป" })
+                    @Html.ValidationMessage("changeStockAmountText", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.Label("สาเหตุที่แก้ไขจำนวนของใน Stock", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextArea("changeStockRemarks"
-             , String.Empty
-             , GlobalValue.TextAreaRow
-             , GlobalValue.TextAreaCol
-             , new { @class = "form-control", placeholder = "ถ้ามีการเปลี่ยนจำนวนของใน Stock จำเป็นต้องระบุสาเหตุ" })
-                @Html.ValidationMessage("changeStockRemarks", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.Label("สาเหตุที่แก้ไขจำนวนของใน Stock", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextArea("changeStockRemarks"
+                      , String.Empty
+                      , GlobalValue.TextAreaRow
+                      , GlobalValue.TextAreaCol
+                      , new { @class = "form-control", placeholder = "ถ้ามีการเปลี่ยนจำนวนของใน Stock จำเป็นต้องระบุสาเหตุ" })
+                    @Html.ValidationMessage("changeStockRemarks", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.Product.NumberInSell, "จำนวนที่ขายได้", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Product.NumberInSell, new { @class = "form-control", @readonly = "true" })
+            <div class="form-group">
+                @Html.LabelFor(m => m.Product.NumberInSell, "จำนวนที่ขายได้", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Product.NumberInSell, new { @class = "form-control", @readonly = "true" })
+                </div>
             </div>
-        </div>
         }
         else
         {
-        <div class="form-group">
-            @Html.LabelFor(m => m.Product.NumberInStock, "จำนวนของใน Stock", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Product.NumberInStock
-                                , new { @class = "form-control", required = "required", type = "number", min = "0", placeholder = "ใส่ตัวเลขที่มีค่าตั้งแต่ 0 ขึ้นไป" } )
-                @Html.ValidationMessageFor(m => m.Product.NumberInStock, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(m => m.Product.NumberInStock, "จำนวนของใน Stock", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Product.NumberInStock
+                                         , new { @class = "form-control", required = "required", type = "number", min = "0", placeholder = "ใส่ตัวเลขที่มีค่าตั้งแต่ 0 ขึ้นไป" })
+                    @Html.ValidationMessageFor(m => m.Product.NumberInStock, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
         }
 
 
         @if (isEdit)
         {
-        <div class="form-group">
-            @Html.LabelFor(m => m.Product.ImageUrl
-         , (ViewBag.ImageUrlChange != null) ? "รูปที่คุณ Upload ล่าสุด" : "รูปปัจจุบัน"
-         , htmlAttributes: new { @class = "control-label col-md-2" })
-            @if (String.IsNullOrWhiteSpace(Model.Product.ImageUrl))
+            <div class="form-group">
+                @Html.LabelFor(m => m.Product.ImageUrl
+                  , (ViewBag.ImageUrlChange != null) ? "รูปที่คุณ Upload ล่าสุด" : "รูปปัจจุบัน"
+                  , htmlAttributes: new { @class = "control-label col-md-2" })
+                @if (String.IsNullOrWhiteSpace(Model.Product.ImageUrl))
                 {
                     Model.Product.ImageUrl = GlobalValue.NoPhoto;
                 }
-            <div class="col-md-10">
-                <img class="img-rounded" src="@Url.Content(Model.Product.ImageUrl)" width="280" height="280" />
+                <div class="col-md-10">
+                    <img class="img-rounded" src="@Url.Content(Model.Product.ImageUrl)" width="280" height="280" />
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <div class="col-md-2"></div>
-            <div class="col-md-10">
-                <label>
-                    @Html.CheckBoxFor(m => m.Product.IsNoImage)
-                    @if (hasImage)
+            <div class="form-group">
+                <div class="col-md-2"></div>
+                <div class="col-md-10">
+                    <label>
+                        @Html.CheckBoxFor(m => m.Product.IsNoImage)
+                        @if (hasImage)
                         {
-                        <span>คุณต้องการลบรูปภาพ ?</span>
+                            <span>คุณต้องการลบรูปภาพ ?</span>
                         }
                         else
                         {
-                        <span>คุณยืนยันที่จะไม่มีรูปภาพ ?</span>
+                            <span>คุณยืนยันที่จะไม่มีรูปภาพ ?</span>
                         }
-                </label>
-                @Html.ValidationMessageFor(m => m.Product.IsNoImage, "", new { @class = "text-danger" })
+                    </label>
+                    @Html.ValidationMessageFor(m => m.Product.IsNoImage, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
         }
 
         <div class="form-group">
@@ -180,11 +181,11 @@
             <div class="col-md-10">
                 @if (ViewBag.ImageUrlChange != null)
                 {
-                @Html.EditorFor(m => m.Product.ImageUrl, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(m => m.Product.ImageUrl, new { htmlAttributes = new { @class = "form-control" } })
                 }
                 else
                 {
-                <input name="ImageFile" type="file" />
+                    <input name="ImageFile" type="file" />
                 }
                 @Html.ValidationMessageFor(m => m.Product.ImageUrl, "", new { @class = "text-danger" })
             </div>
@@ -192,8 +193,8 @@
 
         @if (isEdit)
         {
-        @Html.HiddenFor(m => m.Product.Id)
-        @Html.HiddenFor(m => m.Product.Stamp)
+            @Html.HiddenFor(m => m.Product.Id)
+            @Html.HiddenFor(m => m.Product.Stamp)
         }
 
         @{
@@ -212,10 +213,8 @@
                 <input type="submit" value="บันทึก" class="btn btn-primary" />
             </div>
         </div>
-
     </div>
-
-            }
+}
 
 <div>
     @Html.ActionLink("กลับสู่หน้ารายชื่อ", "Index", null, new { @class = "btn btn-default" })

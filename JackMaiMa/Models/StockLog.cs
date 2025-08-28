@@ -16,10 +16,13 @@ namespace JackMaiMa.Models
         [Required]
         public string LogNo { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
         public int OldStock { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
         public int NumberOfChange { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
         public int CurrentStock { get; set; }
 
         public string Remarks { get; set; }

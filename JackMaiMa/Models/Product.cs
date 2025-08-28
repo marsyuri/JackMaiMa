@@ -28,15 +28,19 @@ namespace JackMaiMa.Models
         public Supplier Supplier { get; set; }
 
         [ValidateForUnitCost]
+        [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = true)]
         public decimal UnitCost { get; set; }
 
         [ValidateForUnitPrice]
+        [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = true)]
         public decimal UnitPrice { get; set; }
 
         [ValidateForNoInStock]
+        [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
         public int NumberInStock { get; set; }
 
         [ValidateForNoInSell]
+        [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
         public int NumberInSell { get; set; }
 
         public bool IsNoImage { get; set; }
@@ -59,6 +63,6 @@ namespace JackMaiMa.Models
 
         public bool IsDeleted { get; set; }
 
-        public IEnumerable<Order_Detail> Order_Details { get; set; }
+        //public IEnumerable<Order_Detail> Order_Details { get; set; }
     }
 }

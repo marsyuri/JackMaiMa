@@ -19,10 +19,13 @@ namespace JackMaiMa.Models
 
         public DateTime RequiredDate { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = true)]
         public decimal AllTotalPrice { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = true)]
         public decimal DiscountPerOrder { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = true)]
         public decimal NetPrice { get; set; }
 
         [Required]

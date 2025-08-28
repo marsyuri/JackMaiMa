@@ -10,12 +10,16 @@ namespace JackMaiMa.Models
     {
         public int Id { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = true)]
         public decimal UnitPrice { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
         public int Quantity { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = true)]
         public decimal TotalPricePerDetail { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = true)]
         public decimal DiscountPerDetail { get; set; }
 
         [Required]
