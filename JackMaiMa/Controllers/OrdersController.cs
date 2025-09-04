@@ -36,7 +36,7 @@ namespace JackMaiMa.Controllers
             ViewBag.SortByCreatedBy = sortOrder == "created_by" ? "created_by_desc" : "created_by";
             ViewBag.SortByCreateDate = sortOrder == "create_date" ? "create_date_desc" : "create_date";
             ViewBag.SortByStatus = sortOrder == "status" ? "status_desc" : "status";
-            
+
             if (searchBox != null)
             {
                 page = 1;
@@ -58,7 +58,7 @@ namespace JackMaiMa.Controllers
                 if (DateTime.TryParse(searchBox, culture, styles, out searchDate))
                 {
                     searchDate = searchDate.Date;
-                    orders = orders.Where(o => DbFunctions.TruncateTime(o.OrderDate) == searchDate 
+                    orders = orders.Where(o => DbFunctions.TruncateTime(o.OrderDate) == searchDate
                                     || DbFunctions.TruncateTime(o.RequiredDate) == searchDate
                                     || DbFunctions.TruncateTime(o.CreateDate) == searchDate);
                 }
@@ -166,7 +166,7 @@ namespace JackMaiMa.Controllers
             if (order == null)
             {
                 return HttpNotFound();
-            }       
+            }
             List<Order_Detail> order_details = _context.Order_Details.Include(d => d.Product)
                                                         .Where(d => d.OrderId == id)
                                                         .ToList();
@@ -193,7 +193,7 @@ namespace JackMaiMa.Controllers
                 {
                     return HttpNotFound();
                 }
-            }   
+            }
             int runNo = CreateRunNo();
             Order newOrder = new Order()
             {
@@ -208,7 +208,7 @@ namespace JackMaiMa.Controllers
             {
                 Order = newOrder,
                 Customers = _context.Customers.Where(c => !c.IsDeleted).OrderBy(c => c.Name).ToList()
-        };
+            };
             return View("OrderForm", viewModel);
         }
 
@@ -315,9 +315,42 @@ namespace JackMaiMa.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Close(int id, byte orderStatus)
         {
+            string currentUser = GetCurrentUser();
             Order orderInDb = _context.Orders.Single(o => o.Id == id);
             orderInDb.OrderStatusId = orderStatus;
-            orderInDb.ModifiedBy = GetCurrentUser();
+            if (orderStatus == OrderStatus.Canceled)
+            {
+                var order_details = _context.Order_Details.Where(od => od.OrderId == id);
+                foreach (var item in order_details)
+                {
+                    var prodInDb = _context.Products.SingleOrDefault(p => p.Id == item.ProductId);
+                    if (prodInDb != null)
+                    {
+                        int oldStock = prodInDb.NumberInStock;
+                        prodInDb.NumberInStock += item.Quantity;
+                        prodInDb.ModifiedBy = currentUser;
+                        prodInDb.ModifiedDate = DateTime.Now;
+
+                        int runNo = _context.StockLogs.Where(s => s.ProductId == prodInDb.Id).Max(s => s.RunningNo);
+                        runNo++;
+                        StockLog log = new StockLog()
+                        {
+                            RunningNo = runNo,
+                            LogNo = String.Format("PD{0}-{1}", prodInDb.Id, runNo),
+                            ProductId = prodInDb.Id,
+                            StockLogTypeId = StockLogType.CancelOrder,
+                            OldStock = oldStock,
+                            NumberOfChange = item.Quantity,
+                            CurrentStock = prodInDb.NumberInStock,
+                            Remarks = "Cancel Order",
+                            LogBy = item.ModifiedBy,
+                            LogDate = DateTime.Now
+                        };
+                        _context.StockLogs.Add(log);
+                    }
+                }
+            }
+            orderInDb.ModifiedBy = currentUser;
             orderInDb.ModifiedDate = DateTime.Now;
             _context.SaveChanges();
             return RedirectToAction("Details", new { id = orderInDb.Id });

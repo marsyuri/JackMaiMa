@@ -16,6 +16,6 @@ namespace JackMaiMa.Models
 
         public static readonly byte Edit = 1;
         public static readonly byte Sell = 2;
-        public static readonly byte CancelOrderDetail = 3;
+        public static readonly byte CancelOrder = 3;
     }
 }
